@@ -110,7 +110,7 @@ As before, here are the feature_importances for our model:
 | csdiffat10      |             0.0127827 |
 | firstherald     |             0.0115346 |
 
-<img src="assets/confusion_matrix.jpg" alt="Confusion Matrix">
+<img src="assets/confusion_matrix.png" alt="Confusion Matrix">
 
 ## Fairness Analysis
 
