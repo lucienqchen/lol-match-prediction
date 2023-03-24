@@ -6,7 +6,7 @@ by Lucien Chen
 
 This project is a continuation of an exploratory data analysis of competitive league matches which can be found [here](https://lucienqchen.github.io/lol-match-analysis/).
 
-Our goal in this project is to try and predict whether or not a team will win a game since that is ultimately determine's a team's success and ability to generate revenue for its parent organization. Since we are trying to predict a binary variable, win/loss, we will be using a binary classification algorithm. In particular, *sklearn's* RandomForestClassifier algorithm and  we will use accuracy as our as our evaluation metric since there is no significant class imbalance (between Red side vs. Blue side).
+Our goal in this project is to try and predict whether or not a League of Legends team will win a game since that is what ultimately determines a team's success and ability to generate revenue for its parent organization. Since we are trying to predict a binary variable, win/loss, we will be using a binary classification algorithm. We will be using accuracy as our as the metric to evaluate our model since there is no significant class imbalance (between Red side vs. Blue side).
 
 Source: [data](https://oracleselixir.com/tools/downloads)
 
@@ -16,7 +16,7 @@ Before we start, we need to determine what kind of information we will use to tr
 
 From this graph, we can see that games take at least about 15 minutes, and so any features we include in our model would need to be able to have been obtained a significant amount of time before the end of the game.
 
-### Cleaning the Data
+#### Cleaning the Data
 The data cleaning process was very similar to that of the exploratory data analysis with some modifications.
 
 Now that our data is a little cleaner, here's what each of our columns represent:
@@ -91,7 +91,7 @@ _**max_depth**_ is the maximum depth that each tree in the forest is allowed to 
 
 Using *sklearn's* built-in GridSearchCV, I found that the best parameters were using entropy as the criterion, using a max depth of 11 and using 110 estimators.
 
-Overall, our model's performance significantly improved on the training data, achieving a score of 0.8030 whereas the performance only slighty improved on testing data, achieving a score of 0.7133, but an improvement nonetheless.
+Overall, our model's performance significantly improved on the training data, achieving a score of 0.8030 whereas the performance only slighty improved on testing data, achieving a score of 0.7133. Regardless, our model was able to predict more accurately for both the training and testing datasets.
 
 As before, here are the feature_importances for our model:
 
@@ -110,17 +110,25 @@ As before, here are the feature_importances for our model:
 | csdiffat10      |             0.0127827 |
 | firstherald     |             0.0115346 |
 
+In this model, there are 6 qualitative, ordinal variables and 6 quantitative variables.
+
+I've also included a confusion matrix below to show how our model performed on the test dataset.
+
 <img src="assets/confusion_matrix.png" alt="Confusion Matrix">
 
 ## Fairness Analysis
 
 An important thing to consider is the fairness of the algorithm, that is, when predicting on different groups, does our model perform differently? 
 
-In our data, there are two primary "classes" so to speak, being is a team playing on Red or Blue side. Since, there are an equal amount of games played on red side as there are on blue side, I used the difference in accuracy as the test statistic and chose a significance level of 5%.
+In our data, there are two primary "classes" so to speak, being whether a team playing on Red or Blue side. Since, there are an equal amount of games played on red side as there are on blue side, I used the difference in accuracy as the test statistic and chose a significance level of 5%.
 
 <iframe src="assets/accuracy_by_side.html" width=1000 height=600 frameBorder=0></iframe>
 
-Let's first define our hypotheses:
+Let's first define our question:
+
+#### Does our model perform the same on a team regardless of which side they played on?
+
+And our hypotheses:
 
 Null Hypothesis: Our model is fair, it's accuracy is the same for both Blue and Red side and any differences are due to chance.
 
@@ -128,6 +136,8 @@ Alternative Hypothesis: Our model is not fair, it's accuracy for blue side is be
 
 After conducting a permutation test, our p-value was 49.24%. In other words, the proportion of differences that were as extreme or more extreme than our observed difference in accuracy of -0.00173, was 49.24%.
 
-Here is an accompanying visual:
+Here is an accompanying visual of our permutation test:
 
 <iframe src="assets/perm_test.html" width=1000 height=600 frameBorder=0></iframe>
+
+We fail to reject the null hypothesis, our model is fair for regardless of side, at the 5% confidence level and it is likely that our model does perform fairly on either side.
